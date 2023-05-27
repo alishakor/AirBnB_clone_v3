@@ -67,6 +67,47 @@ test_db_storage.py'])
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
 
+    def test_get_valid(self):
+        """
+        Test that get returns the correct object when
+        given a valid class and id
+        """
+        self.assertIs(self.storage.get(State, self.state.id), self.state)
+        self.assertIs(self.storage.get(City, self.city.id), self.city)
+        self.assertIs(self.storage.get(User, self.user.id), self.user)
+        self.assertIs(self.storage.get(Place, self.place.id), self.place)
+        self.assertIs(self.storage.get(Amenity, self.amenity.id), self.amenity)
+        self.assertIs(self.storage.get(Review, self.review.id), self.review)
+
+    def test_get_invalid(self):
+        """Test that get returns None when given an invalid class or id"""
+        self.assertIsNone(self.storage.get(State, "invalid"))
+        self.assertIsNone(self.storage.get("Invalid", self.state.id))
+        self.assertIsNone(self.storage.get("Invalid", "invalid"))
+
+    def test_count_with_class(self):
+        """
+        Test that count returns the correct number of objects
+        when given a valid class
+        """
+        self.assertEqual(self.storage.count(State), 1)
+        self.assertEqual(self.storage.count(City), 1)
+        self.assertEqual(self.storage.count(User), 1)
+        self.assertEqual(self.storage.count(Place), 1)
+        self.assertEqual(self.storage.count(Amenity), 1)
+        self.assertEqual(self.storage.count(Review), 1)
+
+    def test_count_without_class(self):
+        """
+        Test that count returns the correct number of objects
+        when not given a class
+        """
+        self.assertEqual(self.storage.count(), 6)
+
+    def test_count_invalid_class(self):
+        """Test that count returns 0 when given an invalid class"""
+        self.assertEqual(self.storage.count("Invalid"), 0)
+
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
